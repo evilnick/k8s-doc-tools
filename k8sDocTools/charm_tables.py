@@ -9,7 +9,7 @@ import tempfile
 import sh
 import sys
 import logging
-import yaml
+from ruamel.yaml import YAML
 import requests
 import re
 from io import StringIO
