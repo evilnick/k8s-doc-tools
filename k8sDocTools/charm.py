@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 
 from theblues.charmstore import CharmStore
-cs = CharmStore('https://api.jujucharms.com/v5')
+import requests
+from k8sDocTools import charm_tables
 
+cs = CharmStore('https://api.jujucharms.com/v5')
+docs_url = 'https://raw.githubusercontent.com/charmed-kubernetes/kubernetes-docs/master/pages/k8s/'
 
 class Charm():
     """
@@ -49,3 +52,12 @@ class Charm():
                     self.snaps[resource] = self.obj['Meta']['charm-metadata']['Resources'][resource]
                 else:
                     self.files[resource] = self.obj['Meta']['charm-metadata']['Resources'][resource]
+
+    def fetch_page(self):
+        """
+        Fetches the relevant page from the master branch of docs repo.
+        """
+        self.page = requests.get(docs_url+'charm-'+self.name+'.md').content
+        # charm_tables.updateString(self.page, self.name+'-'+str(self.revision))
+        self.frontmatter_txt = ''
+        self.frontmatter_obj = ''

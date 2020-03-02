@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import piglet
 import argparse
 import getpass
 import os
@@ -9,14 +8,16 @@ import tempfile
 import sh
 import sys
 import logging
+from jinja2 import Template
 from ruamel.yaml import YAML
 import requests
 import re
 from io import StringIO
 from github import Github
 from github import GithubException
-from __init__ import __version__
+# from __init__ import __version__
 from k8sDocTools.templates import charm_config_tpl
+from k8sDocTools.templates import charm_config_tpl_2
 from k8sDocTools.utils import *
 
 # globals
@@ -54,7 +55,7 @@ def obj2table(obj):
                 )
                 option[1]["default"] = f"[See notes](#{option[0]}-default)"
         option[1]["description"] = option[1]["description"].strip('\n')
-        print(f"string: {option[1]['description']} len: {len(option[1]['description'])}")
+        # print(f"string: {option[1]['description']} len: {len(option[1]['description'])}")
         if (len(option[1]["description"]) > 210) or ("\n " in (option[1]["description"])):
             # assume multi-line entries need to be notes
             if not option[0] in obj["overmatter"]:
@@ -104,6 +105,10 @@ def updatePage(filename, charm):
         f.truncate()
         f.close()
 
+def updateString(string, charm):
+    regex = "<!-- CONFIG STARTS -->\n(.*)\n<!-- CONFIG ENDS -->"
+    config_text = charmconfig2md(charm)
+    re.sub(regex, config_text, string, 1, re.DOTALL)
 
 def updateDir(path):
     """
@@ -125,8 +130,9 @@ def charmconfig2md(charm):
     versions (e.g. 'etcd-113'), in which case that specific version is used.
     """
     config_url = store_url.replace("*charm*", charm)
-    template = piglet.TextTemplate(charm_config_tpl)
-    y = yaml.load(requests.get(config_url).content, Loader=yaml.FullLoader)
+    template = Template(charm_config_tpl_2)
+    y = YAML(typ='safe').load(requests.get(config_url).content)
+    # y = yaml.load(requests.get(config_url).content, Loader=yaml.FullLoader)
     if 'options' in y.keys():
         y = template.render(obj2table(y))
     else:
