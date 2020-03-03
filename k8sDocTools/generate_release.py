@@ -6,14 +6,14 @@ import argparse
 import sh
 import shutil
 import os
-from __init__ import __version__
+from k8sDocTools import __version__
 from github import Github
 from github import GithubException
-from globals import repo_id
-from globals import pages_dir
-from utils import sync
-from utils import sshify
-from bundle import Bundle
+from k8sDocTools.globals import repo_id
+from k8sDocTools.globals import pages_dir
+from k8sDocTools.utils import sync
+from k8sDocTools.utils import sshify
+from k8sDocTools.bundle import Bundle
 
 def main():
     parser = argparse.ArgumentParser(
@@ -60,6 +60,9 @@ def main():
     local_dir = sync(sshify(fork_url),f.name, docs_repo.svn_url, branch_name, quiet=False)
 
     # create charm pages
+    for charm in ck.charms:
+        charm.fetch_page()
+
     # generate component page
     # add pages to git
 

@@ -43,6 +43,11 @@ frontmatter = {
 'toc': False
 }
 
+addons = {
+'context': {'title': 'Components', 'description': 'Detailed description of Charmed Kubernetes release'}
+
+}
+
 
 class Bundle():
     def __init__(self,revision):
@@ -60,7 +65,7 @@ class Bundle():
         for s in self.services:
             self.core_versions[s] = self.obj['services'][s]['charm'].split('-')[-1:][0]
         for c in self.core_versions.keys():
-            self.charms.append(Charm(c, self.core_versions[c]))
+            self.charms.append(Charm(c, self.core_versions[c],self.release))
         self.snaps = dict()
         # join dicts from all charms to create full dict of snaps
         for c in self.charms:

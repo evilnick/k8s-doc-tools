@@ -3,9 +3,25 @@
 from theblues.charmstore import CharmStore
 import requests
 from k8sDocTools import charm_tables
+import re
+import ruamel.yaml
+from jinja2 import Template
 
 cs = CharmStore('https://api.jujucharms.com/v5')
 docs_url = 'https://raw.githubusercontent.com/charmed-kubernetes/kubernetes-docs/master/pages/k8s/'
+
+
+frontmatter = {
+'wrapper_template': 'kubernetes/docs/base_docs.html',
+'markdown_includes': {'nav': 'kubernetes/docs/shared/_side-navigation.md'},
+'context': {'title': 'Charm', 'description': '...'},
+'keywords': 'component, charms, versions, release',
+'tags': ['reference'],
+'sidebar': 'k8smain-sidebar',
+'permalink': '-',
+'layout': ['base', 'ubuntu-com'],
+'toc': False
+}
 
 class Charm():
     """
@@ -14,11 +30,12 @@ class Charm():
     If instantiated with a 'revision' of 0, will fetch info from the latest
     stable version.
     """
-    def __init__(self,name,revision):
+    def __init__(self,name,revision,release):
 
         self.name = name
         self.store_name = 'cs:~containers/'+name
         self.revision = revision
+        self.release = release
         if self.revision == '0':
             # get latest version from the store and update revision
             self.obj =  CharmStore('https://api.jujucharms.com/v5').entity(self.store_name)
@@ -26,10 +43,7 @@ class Charm():
         else:
             self.obj =  CharmStore('https://api.jujucharms.com/v5').entity(self.store_name+'-'+revision)
 
-
-
         self.bugs_url = 'https://bugs.launchpad.net/charmed-kubernetes'
-        self.bugs_url = 'https://github.com/charmed-kubernetes'
         if isinstance (self.obj['Meta']['common-info'], dict):
             if 'bugs-url' in self.obj['Meta']['common-info']:
                 self.bugs_url = self.obj['Meta']['common-info']['bugs-url']
@@ -53,11 +67,21 @@ class Charm():
                 else:
                     self.files[resource] = self.obj['Meta']['charm-metadata']['Resources'][resource]
 
-    def fetch_page(self):
+    def generate_page(self):
         """
         Fetches the relevant page from the master branch of docs repo.
         """
-        self.page = requests.get(docs_url+'charm-'+self.name+'.md').content
+        self.page = requests.get(docs_url+'charm-'+self.name+'.md').content.decode("utf-8")
         # charm_tables.updateString(self.page, self.name+'-'+str(self.revision))
-        self.frontmatter_txt = ''
-        self.frontmatter_obj = ''
+        regex = r"^\s*---(.*?)---\s*$"
+        # re.sub(regex, '', self.page, 0, re.MULTILINE | re.DOTALL)
+        self.page = re.sub(regex, '', self.page, 1, re.MULTILINE | re.DOTALL)
+        # matches = re.search(regex, test_str, re.MULTILINE | re.DOTALL)
+        self.frontmatter_obj = frontmatter
+        self.frontmatter_obj['permalink'] = self.release +'/'+self.name+'.html'
+        self.frontmatter_obj['charm_revision'] = self.revision
+        self.frontmatter_obj['bundle_release'] = self.release
+        self.frontmatter_obj['context']['title'] = str(self.name + ' Charm ').capitalize()
+        self.frontmatter_obj['context']['description'] = self.summary
+        self.frontmatter_txt = ruamel.yaml.round_trip_dump(self.frontmatter_obj, block_seq_indent=4)
+        self.page = '---\n'+self.frontmatter_txt+'---\n'+self.page
