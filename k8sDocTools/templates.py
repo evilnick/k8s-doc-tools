@@ -10,32 +10,59 @@ which go to make up the {{release}} release of Charmed Kubernetes.
 
 Other information about this release can be found on the following pages:
 
- [documentation][]{: .p-button--neutral} [release notes][]{: .p-button--neutral}
- [upgrade notes][]{: .p-button--brand} [bugs][]{: .p-button--neutral}
- [source][]{: .p-button--neutral} [{{release}} milestone][]{: .p-button--neutral}
+<a class='p-button--brand' href='/kubernetes/docs'> Documentation </a>
+<a class='p-button--brand' href='/kubernetes/docs/{{release}}/release-notes'>Release notes </a>
+<a class='p-button--brand' href='/kubernetes/docs/{{release}}/upgrade-notes'>Upgrade notes </a>
+<a class='p-button--brand' href='https://bugs.launchpad.net/charmed-kubernetes'>Bugs </a>
+<a class='p-button--brand' href='https://github.com/charmed-kubernetes/bundle'>Source </a>
+<a class='p-button--brand' href='https://launchpad.net/charmed-kubernetes/+milestone/{{release}}'>Milestone </a>
+
 
 ## Core charms
 
 These charms are the core components or official optional components of the
 release. These charms are maintained by the Charmed Kubernetes team.
 
-{:.u-table-layout--auto}
-| charm  | summary | docs | source | bugs | version | notes |
-|--------|---------|------|--------|------|---------|-------|
+<table class ="u-table-layout--auto">
+  <thead>
+    <tr>
+      <th>Charm</th>
+      <th>Summary</th>
+      <th>docs</th>
+      <th>source</th>
+      <th>bugs</th>
+      <th>version</th>
+      <th>notes</th>
+    </tr>
+  </thead>
+  <tbody>
 {% for c in charms -%}
-| {{c.name}} | {{c.summary.rstrip()}}| [docs](/kubernetes/docs/{{release}}/charm-{{c.name}}) | [source]({{c.source_url}}) | | |
+<tr>
+  <td> {{c.name}} </td>
+  <td> {{c.summary.rstrip()}} </td>
+  <td> <a href="/kubernetes/docs/{{release}}/charm-{{c.name}}">docs</a> </td> <td> <a href="{{c.source_url}}"> source </a> </td>
+  <td> <a href="https://bugs.launchpad.net/charmed-kubernetes"> bugs</a> </td>
+  <td> -- </td>
+  <td> -- </td>
+</tr>
 {% endfor %}
+ </tbody>
+ </table>
 
 ## Snaps
 
 The following snaps are used by this release of Charmed Kubernetes:
 
-{:.u-table-layout--auto}
+
 | snap  | confinement | summary | link |
 |-------|-------------|---------|------|
 {% for s in snaps.keys() -%}
 |{{snaps[s]['Name']}}| ? | {{snaps[s]['Description']}} | ? |
 {% endfor %}
+
+
+
+
 
 <!-- LINKS -->
 [documentation]: /kubernetes/docs/

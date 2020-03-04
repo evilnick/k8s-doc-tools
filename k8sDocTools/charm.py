@@ -78,7 +78,7 @@ class Charm():
         self.page = re.sub(regex, '', self.page, 1, re.MULTILINE | re.DOTALL)
         # matches = re.search(regex, test_str, re.MULTILINE | re.DOTALL)
         self.frontmatter_obj = frontmatter
-        self.frontmatter_obj['permalink'] = self.release +'/'+self.name+'.html'
+        self.frontmatter_obj['permalink'] = self.release +'/'+'charm-'+self.name+'.html'
         self.frontmatter_obj['charm_revision'] = self.revision
         self.frontmatter_obj['bundle_release'] = self.release
         self.frontmatter_obj['context']['title'] = str(self.name + ' Charm ').capitalize()
