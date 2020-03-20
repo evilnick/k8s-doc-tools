@@ -17,6 +17,9 @@ Other information about this release can be found on the following pages:
 <a class='p-button--brand' href='https://github.com/charmed-kubernetes/bundle'>Source </a>
 <a class='p-button--brand' href='https://launchpad.net/charmed-kubernetes/+milestone/{{release}}'>Milestone </a>
 
+<--! GENERATED RELEASE NOTES -->
+
+<--! RELEASE NOTES END -->
 
 ## Core charms
 
@@ -48,6 +51,17 @@ release. These charms are maintained by the Charmed Kubernetes team.
 {% endfor %}
  </tbody>
  </table>
+
+## Compatible Charms
+
+
+## Images
+
+These are the container images used by this release:
+
+<!-- GENERATED CONTAINER IMAGES -->
+
+<!-- CONTAINER IMAGES END -->
 
 ## Snaps
 
