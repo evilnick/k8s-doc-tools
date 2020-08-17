@@ -19,6 +19,7 @@ setup(name='k8sDocTools',
         'console_scripts': [
             'docs-charmtables=k8sDocTools.charm_tables:main',
             'docs-release=k8sDocTools.generate_release:main'
+            'kdt-actions=k8sDocTools.actions:main''
         ],
 
     }
