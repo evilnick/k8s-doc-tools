@@ -18,6 +18,7 @@ from github import GithubException
 # from __init__ import __version__
 from k8sDocTools.templates import charm_config_tpl
 from k8sDocTools.templates import charm_config_tpl_2
+from k8sDocTools import __version__
 from k8sDocTools.utils import *
 
 # globals
