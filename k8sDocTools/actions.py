@@ -13,6 +13,7 @@ from ruamel.yaml import YAML
 import requests
 import re
 import html
+import textwrap
 from io import StringIO
 import frontmatter
 from tidylib import tidy_fragment
@@ -154,13 +155,18 @@ class CharmPage():
             # self.revision = self.obj['Id'].split('-')[-1:][0]
         else:
             self.obj =  CharmStore('https://api.jujucharms.com/v5').entity(self.store_name+'-'+self.revision)
-        for k, v in self.obj['Meta']['charm-actions']['ActionSpecs'].items():
-            v['Params']['description'] = self.sanitize(v['Params']['description'])
-            for kk, vv in v['Params']['properties'].items():
-                 vv['description'] = self.sanitize(vv['description'])
+        if 'ActionSpecs' in self.obj['Meta']['charm-actions']:
+            if not self.obj['Meta']['charm-actions']['ActionSpecs'] == None:
+                for k, v in self.obj['Meta']['charm-actions']['ActionSpecs'].items():
+                    v['Params']['description'] = self.sanitize(v['Params']['description'])
+                    for kk, vv in v['Params']['properties'].items():
+                         vv['description'] = self.sanitize(vv['description'])
+                         if 'default' in vv:
+                             vv['default'] = '\n'.join(textwrap.wrap(str(vv['default']), 50))
 
     def sanitize(self,txt):
         txt = html.escape(txt)
+        txt = '\n'.join(textwrap.wrap(txt, 50))
         txt = '<p>'+txt.replace('\n\n', ' </p> <p>').replace('\n', ' ').strip()+'</p>'
         return(txt)
 
@@ -207,12 +213,15 @@ class CharmPage():
         template = Template(charm_actions_tpl1)
         template_post= Template(charm_actions_post)
         if 'ActionSpecs' in self.obj['Meta']['charm-actions']:
-            obj= self.actionsobj(self.obj['Meta']['charm-actions']['ActionSpecs'])
-            self.actionstxt = template.render({'obj': obj, 'name': self.name})
-            self.actionstxt, errors = tidy_fragment(self.actionstxt, options={'indent-attributes':1})
-            print(errors)
-            self.actionstxt = template_pre.render({'obj': obj, 'name': self.name})+self.actionstxt
-            self.actionstxt += template_post.render({'obj': obj, 'name': self.name})
+            if not self.obj['Meta']['charm-actions']['ActionSpecs'] == None:
+                obj= self.actionsobj(self.obj['Meta']['charm-actions']['ActionSpecs'])
+                self.actionstxt = template.render({'obj': obj, 'name': self.name})
+                self.actionstxt, errors = tidy_fragment(self.actionstxt, options={'indent-attributes':1})
+                print(errors)
+                self.actionstxt = template_pre.render({'obj': obj, 'name': self.name})+self.actionstxt
+                self.actionstxt += template_post.render({'obj': obj, 'name': self.name})
+            else:
+                self.actionstxt = "<!-- ACTIONS STARTS -->\n\n<!-- ACTIONS ENDS -->"
         else:
             self.actionstxt = "<!-- ACTIONS STARTS -->\n\n<!-- ACTIONS ENDS -->"
         regex = "<!-- ACTIONS STARTS -->\n(.*)\n<!-- ACTIONS ENDS -->"
