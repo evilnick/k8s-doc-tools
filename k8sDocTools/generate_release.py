@@ -6,6 +6,7 @@ import argparse
 import sh
 import shutil
 import os
+import uuid
 from pathlib import Path
 from k8sDocTools import __version__
 from github import Github
@@ -28,7 +29,7 @@ def main():
                         help="Token or password for user")
     parser.add_argument('--pr', dest='raise_pr', action='store_true',
                         help="make a PR on github for these changes")
-    parser.add_argument('--no-pr', dest='raise_pr', action='store_false'
+    parser.add_argument('--no-pr', dest='raise_pr', action='store_false',
                         help="no github PR")
     parser.set_defaults(raise_pr=True)
     args = parser.parse_args()
@@ -62,7 +63,7 @@ def main():
       print("You have no fork for this repository. Please create one and try again.")
       sys.exit(1)
     print(sshify(fork_url))
-    branch_name='release-' + args.revision
+    branch_name= uuid.uuid1().hex[:6] + '-release-' + args.revision
     local_dir = sync(sshify(fork_url),f.name, docs_repo.svn_url, branch_name, quiet=False)
     lp = Path(local_dir)
     bp = lp / branch_name
