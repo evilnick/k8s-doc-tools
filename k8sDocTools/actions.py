@@ -82,51 +82,33 @@ juju run-action {{name}} ACTION [parameters] [--wait]
 
 charm_actions_tpl2 = """
 {% for c in obj.keys()|sort %}
-
 <div class="row">
-    <div class="col-2">
-         <ul class="p-list">
-            <li class="p-list__item"><em> {{c}} </em></li>
-          </ul>
-        </div>
-        <div class="col-7">
-          <ul class="p-list">
-            <li class="p-list__item">{ {obj[c]['Description']}}</a></li>
-          </ul>
-        </div>
-      </div>
-
+  <div class="col-2">
+     <h5> {{c}}</h5>
+  </div>
+  <div class="col-7">
+    <p>{{obj[c]['Description']}}</p>
+  </div>
+</div>
 {% if not obj[c]['Params']['properties'] == {} %}
 <div class="row">
-    <div class="col-2">
-         <ul class="p-list">
-            <li class="p-list__item"> &nbsp; </li>
-          </ul>
-        </div>
-        <div class="col-7">
-          <ul class="p-list">
+  <div class="col-2">
+  </div>
+  <div class="col-7">
+    <p>This action has the following parameters:</p>
+    <hr>
 {% for p in obj[c]['Params']['properties'].keys()|sort %}
+    <pre>{{p}}</pre>
+         {{obj[c]['Params']['properties'][p]['description']}}
+         <p><strong>Default:</strong> {{obj[c]['Params']['properties'][p]['default']}} </p>
+    <br>
 
-          </ul>
-        </div>
-      </div>
-
-{% for p in obj[c]['Params']['properties'].keys()|sort %}
-            <tr><td>
-             {{p}}
-             </td>
-             <td> Default: {{obj[c]['Params']['properties'][p]['default']}}</td><tr>
-             <tr><td> {{obj[c]['Params']['properties'][p]['description']}}</td><tr>
 {% endfor %}
-            </tbody>
-            </table>
+    </div>
+  </div>
 {% endif %}
-
-
+<hr>
 {% endfor %}
-  </tbody>
-</table>
-
 """
 
 charm_actions_post = """
@@ -210,7 +192,7 @@ class CharmPage():
 
     def generateactions(self):
         template_pre = Template(charm_actions_pre)
-        template = Template(charm_actions_tpl1)
+        template = Template(charm_actions_tpl2)
         template_post= Template(charm_actions_post)
         if 'ActionSpecs' in self.obj['Meta']['charm-actions']:
             if not self.obj['Meta']['charm-actions']['ActionSpecs'] == None:
@@ -221,8 +203,10 @@ class CharmPage():
                 self.actionstxt = template_pre.render({'obj': obj, 'name': self.name})+self.actionstxt
                 self.actionstxt += template_post.render({'obj': obj, 'name': self.name})
             else:
+                print("NO actions for this charm")
                 self.actionstxt = "<!-- ACTIONS STARTS -->\n\n<!-- ACTIONS ENDS -->"
         else:
+            print("NO actions for this charm")
             self.actionstxt = "<!-- ACTIONS STARTS -->\n\n<!-- ACTIONS ENDS -->"
         regex = "<!-- ACTIONS STARTS -->\n(.*)\n<!-- ACTIONS ENDS -->"
         # self.actionstxt = HTMLBeautifier.beautify(self.actionstxt, 4)
@@ -234,7 +218,8 @@ class CharmPage():
            f.write(frontmatter.dumps(self.data))
         pass
     def actionsobj(self,obj):
-        print(obj)
+        print("Processing {} actions".format(len(obj)))
+        # actions which need to be performed on the object (setting empty default?)
         return(obj)
 
     def actions2obj(self):
@@ -244,12 +229,24 @@ class CharmPage():
     def insertconfig(self):
         pass
 
+def process_dir(args):
+
+    files = (os.listdir(os.curdir))
+    for f in files:
+        if f[:6] == 'charm-':
+            if not f == 'charm-reference.md':
+                print(" Processing {}".format(f))
+                args.filename=f
+                cp = CharmPage(args.filename)
+                cp.generateactions()
+                cp.output(args.filename)
+    print("Done")
 
 def main():
     parser = argparse.ArgumentParser(
         description="Charm Page generator" + __version__
     )
-
+    parser.add_argument("-d","--dir", help="process all charm files in current directory", action='store_true')
     parser.add_argument("--charm", help="A specific charm")
     parser.add_argument("-f","--filename", help="A specific charm markdown page")
     parser.add_argument("--replace", help="if filename spcified, output overwrites original file", default=False)
@@ -258,9 +255,14 @@ def main():
         cp = CharmPage(args.filename)
         cp.generateactions()
         if args.replace :
+            print("replacing original file")
             cp.output(args.filename)
         else:
             cp.output('out.md')
         print('done')
+    if args.dir :
+        process_dir(args)
+
+
 if __name__ == "__main__":
     main()

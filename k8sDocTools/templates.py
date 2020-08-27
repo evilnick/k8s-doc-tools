@@ -172,7 +172,46 @@ charm_config_tpl_2 = """<!-- CONFIG STARTS -->
 
 <!-- CONFIG ENDS -->
 """
-
+charm_actions_tpl1 = """
+{% for c in obj.keys()|sort %}
+<div class="row">
+  <div class="col-2">
+     <h5> {{c}}</h5>
+  </div>
+  <div class="col-7">
+    <p>{{obj[c]['Description']}}</p>
+  </div>
+</div>
+{% if not obj[c]['Params']['properties'] == {} %}
+<div class="row">
+  <div class="col-2">
+  </div>
+  <div class="col-7">
+    <p>This action has the following parameters:</p>
+    <table class ="u-table-layout--auto">
+      <thead>
+        <tr>
+          <th>parameter</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+{% for p in obj[c]['Params']['properties'].keys()|sort %}
+        <tr>
+          <td><pre>{{p}}</pre></td>
+          <td>{{obj[c]['Params']['properties'][p]['description']}}
+              <p><strong>Default:</strong> {{obj[c]['Params']['properties'][p]['default']}} </p>
+        </td>
+        </tr>
+{% endfor %}
+      </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+<hr>
+{% endfor %}
+"""
 
 frontmatter_tpl = {
 'wrapper_template': 'kubernetes/docs/base_docs.html',
