@@ -80,6 +80,7 @@ class Charm():
         self.frontmatter_obj = frontmatter
         self.frontmatter_obj['permalink'] = self.release +'/'+'charm-'+self.name+'.html'
         self.frontmatter_obj['charm_revision'] = self.revision
+        self.frontmatter_obj['charm_name'] = self.name
         self.frontmatter_obj['bundle_release'] = self.release
         self.frontmatter_obj['context']['title'] = str(self.name + ' Charm ').capitalize()
         self.frontmatter_obj['context']['description'] = self.summary

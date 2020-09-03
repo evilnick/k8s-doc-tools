@@ -6,6 +6,7 @@ from jinja2 import Template
 from k8sDocTools.charm import Charm
 from k8sDocTools.charm import CompatibleCharm
 from k8sDocTools.templates import component_page_tpl
+from theblues.charmstore import CharmStore
 
 core = {
 'aws-iam': '0',
@@ -66,12 +67,17 @@ addons = {
 
 
 class Bundle():
-    def __init__(self,revision):
+    def __init__(self,revision,debug=False):
         self.revision = revision
         self.store_url = 'https://api.jujucharms.com/charmstore/v5/bundle/charmed-kubernetes-'+self.revision+'/archive/bundle.yaml'
         self.frontmatter = frontmatter
         self.yaml = requests.get(self.store_url).content
         self.obj = ruamel.yaml.YAML(typ='safe').load(self.yaml)
+        if debug:
+            print("Bundle YAML:\n{}".format(self.obj))
+        if 'Message' in self.obj:
+            print(self.obj['Message'])
+            exit(1)
         self.channel = self.obj['services']['kubernetes-master']['options']['channel']
         self.release = self.channel.split('/')[0]
         self.services = list(self.obj['services'].keys())
