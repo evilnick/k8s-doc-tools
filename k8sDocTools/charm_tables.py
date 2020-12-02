@@ -74,7 +74,6 @@ def obj2table(obj):
             option[1]["description"] = option[1]["description"].replace('\n',' ')
     return obj
 
-
 def markdownify(txt):
     #TODO some simple style fixes to make text render nicely
     # - put URLS *in text* into angle brackets
@@ -138,6 +137,14 @@ def charmconfig2md(charm):
     else:
         y = ''
     return y
+
+def charmactions2md(charm):
+    """
+    The charm argument corresponds to a charm in the charmstore
+    which can be either the simple name of a charm (e.g. 'etcd')
+    in which case the latest stable version is fetched, OR a specific
+    versions (e.g. 'etcd-113'), in which case that specific version is used.
+    """
 
 
 def main():
