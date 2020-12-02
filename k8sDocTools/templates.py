@@ -12,7 +12,7 @@ Other information about this release can be found on the following pages:
 
 <a class='p-button--brand' href='/kubernetes/docs'> Documentation </a>
 <a class='p-button--brand' href='/kubernetes/docs/{{release}}/release-notes'>Release notes </a>
-<a class='p-button--brand' href='/kubernetes/docs/{{release}}/upgrade'>Upgrading </a>
+<a class='p-button--brand' href='/kubernetes/docs/{{release}}/upgrading'>Upgrading </a>
 <a class='p-button--brand' href='https://bugs.launchpad.net/charmed-kubernetes'>Bugs </a>
 <a class='p-button--brand' href='https://github.com/charmed-kubernetes/bundle'>Source </a>
 <a class='p-button--brand' href='https://launchpad.net/charmed-kubernetes/+milestone/{{release}}'>Milestone </a>
@@ -84,6 +84,7 @@ These charms are frequently used with Charmed Kubernetes.
 These are the container images used by this release:
 
 <!-- GENERATED CONTAINER IMAGES -->
+
 
 <!-- CONTAINER IMAGES END -->
 
