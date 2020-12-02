@@ -4,8 +4,8 @@ import ruamel.yaml
 import requests
 from jinja2 import Template
 from k8sDocTools.charm import Charm
+from k8sDocTools.charm import CompatibleCharm
 from k8sDocTools.templates import component_page_tpl
-
 
 core = {
 'aws-iam': '0',
@@ -30,6 +30,22 @@ core = {
 'vsphere-integrator': '0'
 }
 
+compatible_charms = [
+'apache2',
+'ceph-osd',
+'elasticsearch',
+'filebeat',
+'grafana',
+'graylog',
+'hacluster',
+'mongodb',
+'nagios',
+'nfs',
+'nrpe',
+'prometheus2',
+'telegraf',
+'vault'
+]
 
 frontmatter = {
 'wrapper_template': 'kubernetes/docs/base_docs.html',
@@ -70,6 +86,9 @@ class Bundle():
         # join dicts from all charms to create full dict of snaps
         for c in self.charms:
             self.snaps = {**self.snaps, **c.snaps}
+        self.compatible_charms = list()
+        for c in compatible_charms:
+            self.compatible_charms.append(CompatibleCharm(c))
 
     def __repr__(self):
         return(str(self.yaml))

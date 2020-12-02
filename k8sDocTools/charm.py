@@ -85,3 +85,19 @@ class Charm():
         self.frontmatter_obj['context']['description'] = self.summary
         self.frontmatter_txt = ruamel.yaml.round_trip_dump(self.frontmatter_obj, block_seq_indent=4)
         self.page = '---\n'+self.frontmatter_txt+'---\n'+self.page
+
+
+class CompatibleCharm():
+    """
+    Fetches the charm info from the CharmStore and unpacks some values
+    to make it possible to use in templates.
+    These charms are not locked to a particular revision, and no
+    additional pages are generated for them
+    """
+    def __init__(self,store_name,notes=''):
+        self.name = store_name
+        self.notes = notes
+        self.obj =  CharmStore('https://api.jujucharms.com/v5').entity(self.name)
+        self.revision = self.obj['Id'].split('-')[-1:][0]
+        self.summary = self.obj['Meta']['charm-metadata']['Summary']
+        self.description = self.obj['Meta']['charm-metadata']['Description']

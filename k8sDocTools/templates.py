@@ -6,17 +6,21 @@ component_page_tpl ="""---
 source of the information - please file a bug rather than editing the text -->
 
 This page details the charms, snaps, images and other components
-which go to make up the {{release}} release of Charmed Kubernetes.
+which comprise the {{release}} release of Charmed Kubernetes.
 
 Other information about this release can be found on the following pages:
 
 <a class='p-button--brand' href='/kubernetes/docs'> Documentation </a>
 <a class='p-button--brand' href='/kubernetes/docs/{{release}}/release-notes'>Release notes </a>
-<a class='p-button--brand' href='/kubernetes/docs/{{release}}/upgrade-notes'>Upgrade notes </a>
+<a class='p-button--brand' href='/kubernetes/docs/{{release}}/upgrade'>Upgrading </a>
 <a class='p-button--brand' href='https://bugs.launchpad.net/charmed-kubernetes'>Bugs </a>
 <a class='p-button--brand' href='https://github.com/charmed-kubernetes/bundle'>Source </a>
 <a class='p-button--brand' href='https://launchpad.net/charmed-kubernetes/+milestone/{{release}}'>Milestone </a>
 
+## What's new
+
+For a list of new features, changes, deprecations, and bug fixes in this
+release, please see the [Release notes](release-notes).
 
 ## Core charms
 
@@ -42,12 +46,46 @@ release. These charms are maintained by the Charmed Kubernetes team.
   <td> {{c.summary.rstrip()}} </td>
   <td> <a href="/kubernetes/docs/{{release}}/charm-{{c.name}}">docs</a> </td> <td> <a href="{{c.source_url}}"> source </a> </td>
   <td> <a href="https://bugs.launchpad.net/charmed-kubernetes"> bugs</a> </td>
-  <td> -- </td>
+  <td> {{c.revision}} </td>
   <td> -- </td>
 </tr>
 {% endfor %}
  </tbody>
  </table>
+
+## Compatible Charms
+
+These charms are frequently used with Charmed Kubernetes.
+
+<table class ="u-table-layout--auto">
+  <thead>
+    <tr>
+      <th>Charm</th>
+      <th>Summary</th>
+      <th>Store page</th>
+      <th>notes</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for cc in compatible_charms -%}
+<tr>
+  <td> {{cc.name}} </td>
+  <td> {{cc.summary.rstrip()}} </td>
+  <td> <a href="https://jaas.ai/{{cc.name}}">docs</a> </td>
+  <td> {{cc.notes}} </td>
+</tr>
+{% endfor %}
+ </tbody>
+ </table>
+
+
+## Images
+
+These are the container images used by this release:
+
+<!-- GENERATED CONTAINER IMAGES -->
+
+<!-- CONTAINER IMAGES END -->
 
 ## Snaps
 
