@@ -10,7 +10,6 @@ which comprise the {{release}} release of Charmed Kubernetes.
 
 Other information about this release can be found on the following pages:
 
-<a class='p-button--brand' href='/kubernetes/docs'> Documentation </a>
 <a class='p-button--brand' href='/kubernetes/docs/{{release}}/release-notes'>Release notes </a>
 <a class='p-button--brand' href='/kubernetes/docs/{{release}}/upgrade'>Upgrading </a>
 <a class='p-button--brand' href='https://bugs.launchpad.net/charmed-kubernetes'>Bugs </a>
@@ -46,7 +45,7 @@ release. These charms are maintained by the Charmed Kubernetes team.
   <td> {{c.summary.rstrip()}} </td>
   <td> <a href="/kubernetes/docs/{{release}}/charm-{{c.name}}">docs</a> </td> <td> <a href="{{c.source_url}}"> source </a> </td>
   <td> <a href="https://bugs.launchpad.net/charmed-kubernetes"> bugs</a> </td>
-  <td> {{c.revision}} </td>
+  <td> <a href="https://jaas.ai/u/containers/{{c.name}}/{{c.revision}}"> {{c.revision}} </td>
   <td> -- </td>
 </tr>
 {% endfor %}
@@ -214,7 +213,7 @@ charm_actions_tpl1 = """
 """
 
 frontmatter_tpl = {
-'wrapper_template': 'kubernetes/docs/base_docs.html',
+'wrapper_template': 'templates/docs/markdown.html',
 'markdown_includes': {'nav': 'kubernetes/docs/shared/_side-navigation.md'},
 'context': {'title': 'Components', 'description': 'Detailed description of Charmed Kubernetes release'},
 'keywords': 'component, charms, versions, release',
